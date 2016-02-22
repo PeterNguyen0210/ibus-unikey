@@ -38,15 +38,6 @@ msgstr "Nếu bật, bạn có thể giảm lỗi chính tả khi gõ"
 msgid "Enable Macro"
 msgstr "Bật gõ tắt"
 
-#. --create and add MouseCapture property
-#: ../src/engine.cpp:577
-msgid "Capture mouse event"
-msgstr "Bắt sự kiện chuột"
-
-#: ../src/engine.cpp:578
-msgid "Auto send PreEdit string to Application when mouse move or click"
-msgstr "Tự động gửi chuỗi PreEdit đến ứng dụng khi chuột di chuyển hoặc click"
-
 #. --create and add Launch Setup GUI property
 #: ../src/engine.cpp:600
 msgid "Full setup..."
@@ -198,10 +189,6 @@ msgstr "_Sửa bảng gõ tắt"
 #: ../setup/setup-main.ui.h:23
 msgid "Process _W at word begin"
 msgstr "Xử lý phím _W ở đầu từ"
-
-#: ../setup/setup-main.ui.h:24
-msgid "Capture _mouse event"
-msgstr "Bắt sự _kiện chuột"
 
 #: ../setup/setup-main.ui.h:25
 msgid "<b>Options</b>"
