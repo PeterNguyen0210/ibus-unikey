@@ -4,3 +4,7 @@
 *~
 *.in
 .idea/
+*.Plo
+*.a
+*.Po
+*.la

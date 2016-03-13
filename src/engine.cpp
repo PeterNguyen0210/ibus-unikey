@@ -136,6 +136,9 @@ static void ibus_unikey_engine_load_config(IBusUnikeyEngine* unikey)
                 break;
             }
         }
+    } else {
+        //set default value
+        ibus_unikey_config_set_string(config, CONFIG_SECTION, CONFIG_INPUTMETHOD, Unikey_IMNames[0]);
     }
 
     if (ibus_unikey_config_get_string(config, CONFIG_SECTION, CONFIG_OUTPUTCHARSET, &str))
@@ -148,30 +151,73 @@ static void ibus_unikey_engine_load_config(IBusUnikeyEngine* unikey)
                 break;
             }
         }
+    } else {
+        ibus_unikey_config_set_string(config, CONFIG_SECTION, CONFIG_INPUTMETHOD, Unikey_OCNames[0]);
     }
 
     if (ibus_unikey_config_get_boolean(config, CONFIG_SECTION, CONFIG_FREEMARKING, &b))
+    {
         unikey->ukopt.freeMarking = b;
+    }
+    else
+    {
+        ibus_unikey_config_set_boolean(config, CONFIG_SECTION, CONFIG_FREEMARKING, DEFAULT_CONF_FREEMARKING);
+    }
 
     if (ibus_unikey_config_get_boolean(config, CONFIG_SECTION, CONFIG_MODERNSTYLE, &b))
+    {
         unikey->ukopt.modernStyle = b;
+    }
+    else
+    {
+        ibus_unikey_config_set_boolean(config, CONFIG_SECTION, CONFIG_MODERNSTYLE, DEFAULT_CONF_MODERNSTYLE);
+    }
 
     if (ibus_unikey_config_get_boolean(config, CONFIG_SECTION, CONFIG_MACROENABLED, &b))
+    {
         unikey->ukopt.macroEnabled = b;
+    }
+    else
+    {
+        ibus_unikey_config_set_boolean(config, CONFIG_SECTION, CONFIG_MACROENABLED, DEFAULT_CONF_MACROENABLED);
+    }
 
     if (ibus_unikey_config_get_boolean(config, CONFIG_SECTION, CONFIG_SPELLCHECK, &b))
+    {
         unikey->ukopt.spellCheckEnabled = b;
+    }
+    else
+    {
+        ibus_unikey_config_set_boolean(config, CONFIG_SECTION, CONFIG_SPELLCHECK, DEFAULT_CONF_SPELLCHECK);
+    }
 
     if (ibus_unikey_config_get_boolean(config, CONFIG_SECTION, CONFIG_AUTORESTORENONVN, &b))
+    {
         unikey->ukopt.autoNonVnRestore = b;
+    }
+    else
+    {
+        ibus_unikey_config_set_boolean(config, CONFIG_SECTION, CONFIG_AUTORESTORENONVN, DEFAULT_CONF_AUTONONVNRESTORE);
+    }
 
     if (ibus_unikey_config_get_boolean(config, CONFIG_SECTION, CONFIG_PROCESSWATBEGIN, &b))
+    {
         unikey->process_w_at_begin = b;
+    }
+    else
+    {
+        ibus_unikey_config_set_boolean(config, CONFIG_SECTION, CONFIG_PROCESSWATBEGIN, DEFAULT_CONF_PROCESSWATBEGIN);
+    }
 
     // load macro
     gchar* fn = get_macro_file();
     UnikeyLoadMacroTable(fn);
     g_free(fn);
+    
+    //update configures to UKEngine
+    UnikeySetInputMethod(unikey->im);
+    UnikeySetOutputCharset(unikey->oc);
+    UnikeySetOptions(&unikey->ukopt);    
 }
 
 static GObject* ibus_unikey_engine_constructor(GType type,
@@ -200,13 +246,11 @@ static void ibus_unikey_engine_focus_in(IBusEngine* engine)
 {
     unikey = (IBusUnikeyEngine*)engine;
 
-    UnikeySetInputMethod(unikey->im);
-    UnikeySetOutputCharset(unikey->oc);
-
-    UnikeySetOptions(&unikey->ukopt);
-    ibus_engine_register_properties(engine, unikey->prop_list);
-
+    ibus_unikey_engine_load_config(unikey);
     parent_class->focus_in(engine);
+    
+    //update menu
+    ibus_engine_register_properties(engine, unikey->prop_list);        
 }
 
 static void ibus_unikey_engine_clean_buffer(IBusEngine* engine) {
@@ -247,7 +291,7 @@ static void ibus_unikey_engine_reset(IBusEngine* engine)
 
 static void ibus_unikey_engine_enable(IBusEngine* engine)
 {
-    parent_class->enable(engine);
+    parent_class->enable(engine);    
 }
 
 static void ibus_unikey_engine_disable(IBusEngine* engine)
@@ -300,7 +344,11 @@ static void ibus_unikey_engine_property_activate(IBusEngine* engine,
                     else
                         ibus_property_set_state(prop, PROP_STATE_UNCHECKED);
                 } // end update property state
-
+                
+                        
+                //update menu && save changes
+                ibus_engine_register_properties(engine, unikey->prop_list);
+                ibus_unikey_config_set_string(config, CONFIG_SECTION, CONFIG_INPUTMETHOD, Unikey_IMNames[i]);
                 break;
             }
         }
@@ -342,61 +390,70 @@ static void ibus_unikey_engine_property_activate(IBusEngine* engine,
                         ibus_property_set_state(prop, PROP_STATE_UNCHECKED);
                 } // end update property state
 
+                //update menu && save changes
+                ibus_engine_register_properties(engine, unikey->prop_list);
+                ibus_unikey_config_set_string(config, CONFIG_SECTION, CONFIG_OUTPUTCHARSET, Unikey_OCNames[i]);
                 break;
             }
         }
     } // end output charset active
 
     // spellcheck active
-    else if (strcmp(prop_name, CONFIG_SPELLCHECK) == 0)
-    {
-        unikey->ukopt.spellCheckEnabled = !unikey->ukopt.spellCheckEnabled;
+    // else if (strcmp(prop_name, CONFIG_SPELLCHECK) == 0)
+    // {
+    //     unikey->ukopt.spellCheckEnabled = !unikey->ukopt.spellCheckEnabled;
 
-        // update state
-        for (j = 0; j < unikey->menu_opt->properties->len ; j++)
-        {
-            prop = ibus_prop_list_get(unikey->menu_opt, j);
-            if (prop == NULL)
-                return;
+    //     // update state
+    //     for (j = 0; j < unikey->menu_opt->properties->len ; j++)
+    //     {
+    //         prop = ibus_prop_list_get(unikey->menu_opt, j);
+    //         if (prop == NULL)
+    //             return;
 
-            else if (strcmp(ibus_property_get_key(prop), CONFIG_SPELLCHECK) == 0)
-            {
-                ibus_property_set_state(prop, (unikey->ukopt.spellCheckEnabled == 1)?
-                    PROP_STATE_CHECKED:PROP_STATE_UNCHECKED);
-                break;
-            }
-        } // end update state
-    } // end spellcheck active
+    //         else if (strcmp(ibus_property_get_key(prop), CONFIG_SPELLCHECK) == 0)
+    //         {
+    //             ibus_property_set_state(prop, (unikey->ukopt.spellCheckEnabled == 1)?
+    //                 PROP_STATE_CHECKED:PROP_STATE_UNCHECKED);
+    //             break;
+    //         }
+    //     } // end update state
+        
+    //     // save changes
+    //     ibus_unikey_config_set_boolean(config, CONFIG_SECTION, CONFIG_SPELLCHECK, unikey->ukopt.spellCheckEnabled == 1);
+    // } // end spellcheck active
 
     // MacroEnabled active
-    else if (strcmp(prop_name, CONFIG_MACROENABLED) == 0)
-    {
-        unikey->ukopt.macroEnabled = !unikey->ukopt.macroEnabled;
+    // else if (strcmp(prop_name, CONFIG_MACROENABLED) == 0)
+    // {
+    //     unikey->ukopt.macroEnabled = !unikey->ukopt.macroEnabled;
 
-        // update state
-        for (j = 0; j < unikey->menu_opt->properties->len ; j++)
-        {
-            prop = ibus_prop_list_get(unikey->menu_opt, j);
-            if (prop == NULL)
-                return;
+    //     // update state
+    //     for (j = 0; j < unikey->menu_opt->properties->len ; j++)
+    //     {
+    //         prop = ibus_prop_list_get(unikey->menu_opt, j);
+    //         if (prop == NULL)
+    //             return;
 
-            else if (strcmp(ibus_property_get_key(prop), CONFIG_MACROENABLED) == 0)
-            {
-                ibus_property_set_state(prop, (unikey->ukopt.macroEnabled == 1)?
-                    PROP_STATE_CHECKED:PROP_STATE_UNCHECKED);
-                break;
-            }
-        } // end update state
-    } // end MacroEnabled active
+    //         else if (strcmp(ibus_property_get_key(prop), CONFIG_MACROENABLED) == 0)
+    //         {
+    //             ibus_property_set_state(prop, (unikey->ukopt.macroEnabled == 1)?
+    //                 PROP_STATE_CHECKED:PROP_STATE_UNCHECKED);
+    //             break;
+    //         }
+    //     } // end update state
+        
+        // save changes
+        // ibus_unikey_config_set_boolean(config, CONFIG_SECTION, CONFIG_MACROENABLED, unikey->ukopt.macroEnabled == 1);
+    // } // end MacroEnabled active
     // if Run setup
     else if (strcmp(prop_name, "RunSetupGUI") == 0)
     {
         system(LIBEXECDIR "/ibus-setup-unikey &");
     } // END Run setup
 
-    UnikeySetInputMethod(unikey->im);
-    UnikeySetOutputCharset(unikey->oc);
-    UnikeySetOptions(&unikey->ukopt);
+    // UnikeySetInputMethod(unikey->im);
+    // UnikeySetOutputCharset(unikey->oc);
+    // UnikeySetOptions(&unikey->ukopt);    
 }
 
 static void ibus_unikey_engine_create_property_list(IBusUnikeyEngine* unikey)
@@ -411,7 +468,7 @@ static void ibus_unikey_engine_create_property_list(IBusUnikeyEngine* unikey)
         unikey->prop_list = ibus_prop_list_new();
         unikey->menu_im   = ibus_prop_list_new();
         unikey->menu_oc   = ibus_prop_list_new();
-        unikey->menu_opt  = ibus_prop_list_new();
+        // unikey->menu_opt  = ibus_prop_list_new();
 
         g_object_ref_sink(unikey->prop_list);
     }
@@ -464,61 +521,61 @@ static void ibus_unikey_engine_create_property_list(IBusUnikeyEngine* unikey)
     // add option property
 
     // --create and add spellcheck property
-    label = ibus_text_new_from_static_string(_("Enable spell check"));
-    tooltip = ibus_text_new_from_static_string(_("If enable, you can decrease mistake when typing"));
-    prop = ibus_property_new(CONFIG_SPELLCHECK,
-                             PROP_TYPE_TOGGLE,
-                             label,
-                             "",
-                             tooltip,
-                             TRUE,
-                             TRUE,
-                             (unikey->ukopt.spellCheckEnabled==1)?
-                             PROP_STATE_CHECKED:PROP_STATE_UNCHECKED,
-                             NULL);
+    // label = ibus_text_new_from_static_string(_("Enable spell check"));
+    // tooltip = ibus_text_new_from_static_string(_("If enable, you can decrease mistake when typing"));
+    // prop = ibus_property_new(CONFIG_SPELLCHECK,
+    //                          PROP_TYPE_TOGGLE,
+    //                          label,
+    //                          "",
+    //                          tooltip,
+    //                          TRUE,
+    //                          TRUE,
+    //                          (unikey->ukopt.spellCheckEnabled==1)?
+    //                          PROP_STATE_CHECKED:PROP_STATE_UNCHECKED,
+    //                          NULL);
 
-    if (ibus_prop_list_update_property(unikey->menu_opt, prop) == false)
-        ibus_prop_list_append(unikey->menu_opt, prop);
+    // if (ibus_prop_list_update_property(unikey->menu_opt, prop) == false)
+    //     ibus_prop_list_append(unikey->menu_opt, prop);
 
     // --create and add macroEnabled property
-    label = ibus_text_new_from_static_string(_("Enable Macro"));
-    tooltip = ibus_text_new_from_static_string("");
-    prop = ibus_property_new(CONFIG_MACROENABLED,
-                             PROP_TYPE_TOGGLE,
-                             label,
-                             "",
-                             tooltip,
-                             TRUE,
-                             TRUE,
-                             (unikey->ukopt.macroEnabled==1)?
-                             PROP_STATE_CHECKED:PROP_STATE_UNCHECKED,
-                             NULL);
+    // label = ibus_text_new_from_static_string(_("Enable Macro"));
+    // tooltip = ibus_text_new_from_static_string("");
+    // prop = ibus_property_new(CONFIG_MACROENABLED,
+    //                          PROP_TYPE_TOGGLE,
+    //                          label,
+    //                          "",
+    //                          tooltip,
+    //                          TRUE,
+    //                          TRUE,
+    //                          (unikey->ukopt.macroEnabled==1)?
+    //                          PROP_STATE_CHECKED:PROP_STATE_UNCHECKED,
+    //                          NULL);
 
-    if (ibus_prop_list_update_property(unikey->menu_opt, prop) == false)
-        ibus_prop_list_append(unikey->menu_opt, prop);
+    // if (ibus_prop_list_update_property(unikey->menu_opt, prop) == false)
+    //     ibus_prop_list_append(unikey->menu_opt, prop);
 
     // --separator
-    prop = ibus_property_new("", PROP_TYPE_SEPARATOR,
-                             NULL, "", NULL, TRUE, TRUE,
-                             PROP_STATE_UNCHECKED, NULL);
-    if (ibus_prop_list_update_property(unikey->menu_opt, prop) == false)
-        ibus_prop_list_append(unikey->menu_opt, prop);
+    // prop = ibus_property_new("", PROP_TYPE_SEPARATOR,
+    //                          NULL, "", NULL, TRUE, TRUE,
+    //                          PROP_STATE_UNCHECKED, NULL);
+    // if (ibus_prop_list_update_property(unikey->menu_opt, prop) == false)
+    //     ibus_prop_list_append(unikey->menu_opt, prop);
 
     // --create and add Launch Setup GUI property
-    label = ibus_text_new_from_static_string(_("Full setup..."));
-    tooltip = ibus_text_new_from_static_string(_("Full setup utility for IBus-Unikey"));
-    prop = ibus_property_new("RunSetupGUI",
-                             PROP_TYPE_NORMAL,
-                             label,
-                             "",
-                             tooltip,
-                             TRUE,
-                             TRUE,
-                             PROP_STATE_UNCHECKED,
-                             NULL);
+    // label = ibus_text_new_from_static_string(_("Full setup..."));
+    // tooltip = ibus_text_new_from_static_string(_("Full setup utility for IBus-Unikey"));
+    // prop = ibus_property_new("RunSetupGUI",
+    //                          PROP_TYPE_NORMAL,
+    //                          label,
+    //                          "",
+    //                          tooltip,
+    //                          TRUE,
+    //                          TRUE,
+    //                          PROP_STATE_UNCHECKED,
+    //                          NULL);
 
-    if (ibus_prop_list_update_property(unikey->menu_opt, prop) == false)
-        ibus_prop_list_append(unikey->menu_opt, prop);
+    // if (ibus_prop_list_update_property(unikey->menu_opt, prop) == false)
+    //     ibus_prop_list_append(unikey->menu_opt, prop);
 // END create option menu
 
 // create top menu
@@ -566,17 +623,17 @@ static void ibus_unikey_engine_create_property_list(IBusUnikeyEngine* unikey)
         ibus_prop_list_append(unikey->prop_list, prop);
 
     // -- add option menu
-    label = ibus_text_new_from_static_string(_("Options"));
-    tooltip = ibus_text_new_from_static_string(_("Options for Unikey"));
-    prop = ibus_property_new("Options",
-                             PROP_TYPE_MENU,
+    label = ibus_text_new_from_static_string(_("Full setup..."));
+    tooltip = ibus_text_new_from_static_string(_("Full setup utility for IBus-Unikey"));
+    prop = ibus_property_new("RunSetupGUI",
+                             PROP_TYPE_NORMAL,
                              label,
-                             "gtk-preferences",
+                             "",
                              tooltip,
                              TRUE,
                              TRUE,
                              PROP_STATE_UNCHECKED,
-                             unikey->menu_opt);
+                             NULL);
 
     if (ibus_prop_list_update_property(unikey->prop_list, prop) == false)
         ibus_prop_list_append(unikey->prop_list, prop);
