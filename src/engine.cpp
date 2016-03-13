@@ -451,9 +451,9 @@ static void ibus_unikey_engine_property_activate(IBusEngine* engine,
         system(LIBEXECDIR "/ibus-setup-unikey &");
     } // END Run setup
 
-    // UnikeySetInputMethod(unikey->im);
-    // UnikeySetOutputCharset(unikey->oc);
-    // UnikeySetOptions(&unikey->ukopt);    
+    UnikeySetInputMethod(unikey->im);
+    UnikeySetOutputCharset(unikey->oc);
+    UnikeySetOptions(&unikey->ukopt);    
 }
 
 static void ibus_unikey_engine_create_property_list(IBusUnikeyEngine* unikey)
@@ -640,17 +640,11 @@ static void ibus_unikey_engine_create_property_list(IBusUnikeyEngine* unikey)
 // end top menu
 }
 
-static void ibus_unikey_engine_update_preedit_string(IBusEngine *engine, const gchar *string, gboolean visible)
+static void ibus_unikey_engine_update_preedit_string(IBusUnikeyEngine *unikey)
 {
-    IBusText *text;
-
-    text = ibus_text_new_from_static_string(string);
-
-    // underline text
-    ibus_text_append_attribute(text, IBUS_ATTR_TYPE_UNDERLINE, IBUS_ATTR_UNDERLINE_SINGLE, 0, -1);
-
     // update and display text
-    ibus_engine_update_preedit_text_with_mode(engine, text, ibus_text_get_length(text), visible, IBUS_ENGINE_PREEDIT_COMMIT);
+    IBusText *text = ibus_text_new_from_static_string(unikey->preeditstr->c_str());
+    ibus_engine_update_preedit_text_with_mode((IBusEngine*)unikey, text, ibus_text_get_length(text), true, IBUS_ENGINE_PREEDIT_COMMIT);
 }
 
 static void ibus_unikey_engine_erase_chars(IBusEngine *engine, int num_chars)
@@ -753,7 +747,7 @@ static gboolean ibus_unikey_engine_process_key_event_preedit(IBusEngine* engine,
             else
             {
                 ibus_unikey_engine_erase_chars(engine, UnikeyBackspaces);
-                ibus_unikey_engine_update_preedit_string(engine, unikey->preeditstr->c_str(), true);
+                ibus_unikey_engine_update_preedit_string(unikey);
             }
 
             // change tone position after press backspace
@@ -772,7 +766,7 @@ static gboolean ibus_unikey_engine_process_key_event_preedit(IBusEngine* engine,
                     unikey->preeditstr->append((const gchar*)buf, CONVERT_BUF_SIZE - bufSize);
                 }
 
-                ibus_unikey_engine_update_preedit_string(engine, unikey->preeditstr->c_str(), true);
+                ibus_unikey_engine_update_preedit_string(unikey);
             }
         }
         return true;
@@ -871,7 +865,7 @@ static gboolean ibus_unikey_engine_process_key_event_preedit(IBusEngine* engine,
         }
         // end commit string
 
-        ibus_unikey_engine_update_preedit_string(engine, unikey->preeditstr->c_str(), true);
+        ibus_unikey_engine_update_preedit_string(unikey);
         return true;
     } //end capture printable char
 
