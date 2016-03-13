@@ -124,7 +124,7 @@ static void ibus_unikey_engine_load_config(IBusUnikeyEngine* unikey)
     unikey->ukopt.modernStyle           = DEFAULT_CONF_MODERNSTYLE;
     unikey->ukopt.freeMarking           = DEFAULT_CONF_FREEMARKING;
     unikey->ukopt.macroEnabled          = DEFAULT_CONF_MACROENABLED;
-    unikey->process_w_at_begin          = DEFAULT_CONF_PROCESSWATBEGIN;
+    //unikey->process_w_at_begin          = DEFAULT_CONF_PROCESSWATBEGIN;
 
     if (ibus_unikey_config_get_string(config, CONFIG_SECTION, CONFIG_INPUTMETHOD, &str))
     {
@@ -200,14 +200,14 @@ static void ibus_unikey_engine_load_config(IBusUnikeyEngine* unikey)
         ibus_unikey_config_set_boolean(config, CONFIG_SECTION, CONFIG_AUTORESTORENONVN, DEFAULT_CONF_AUTONONVNRESTORE);
     }
 
-    if (ibus_unikey_config_get_boolean(config, CONFIG_SECTION, CONFIG_PROCESSWATBEGIN, &b))
-    {
-        unikey->process_w_at_begin = b;
-    }
-    else
-    {
-        ibus_unikey_config_set_boolean(config, CONFIG_SECTION, CONFIG_PROCESSWATBEGIN, DEFAULT_CONF_PROCESSWATBEGIN);
-    }
+    // if (ibus_unikey_config_get_boolean(config, CONFIG_SECTION, CONFIG_PROCESSWATBEGIN, &b))
+    // {
+    //     unikey->process_w_at_begin = b;
+    // }
+    // else
+    // {
+    //     ibus_unikey_config_set_boolean(config, CONFIG_SECTION, CONFIG_PROCESSWATBEGIN, DEFAULT_CONF_PROCESSWATBEGIN);
+    // }
 
     // load macro
     gchar* fn = get_macro_file();
@@ -785,24 +785,24 @@ static gboolean ibus_unikey_engine_process_key_event_preedit(IBusEngine* engine,
 
         UnikeySetCapsState(modifiers & IBUS_SHIFT_MASK, modifiers & IBUS_LOCK_MASK);
 
-        // process keyval
-        if ((unikey->im == UkTelex || unikey->im == UkSimpleTelex2)
-            && unikey->process_w_at_begin == false
-            && UnikeyAtWordBeginning()
-            && (keyval == IBUS_w || keyval == IBUS_W))
-        {
-            UnikeyPutChar(keyval);
-            if (unikey->ukopt.macroEnabled == 0)
-            {
-                return false;
-            }
-            else
-            {
-                unikey->preeditstr->append(keyval==IBUS_w?"w":"W");
-                ibus_unikey_engine_update_preedit_string(engine, unikey->preeditstr->c_str(), true);
-                return true;
-            }
-        }
+        // // process keyval
+        // if ((unikey->im == UkTelex || unikey->im == UkSimpleTelex2)
+        //     && unikey->process_w_at_begin == false
+        //     && UnikeyAtWordBeginning()
+        //     && (keyval == IBUS_w || keyval == IBUS_W))
+        // {
+        //     UnikeyPutChar(keyval);
+        //     if (unikey->ukopt.macroEnabled == 0)
+        //     {
+        //         return false;
+        //     }
+        //     else
+        //     {
+        //         unikey->preeditstr->append(keyval==IBUS_w?"w":"W");
+        //         ibus_unikey_engine_update_preedit_string(engine, unikey->preeditstr->c_str(), true);
+        //         return true;
+        //     }
+        // }
         // shift + space, shift + shift event
         if ((unikey->last_key_with_shift == false && modifiers & IBUS_SHIFT_MASK
                     && keyval == IBUS_space && !UnikeyAtWordBeginning())

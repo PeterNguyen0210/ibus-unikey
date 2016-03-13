@@ -22,7 +22,7 @@ struct _IBusUnikeyEngine
     UkInputMethod im; // input method
     unsigned int  oc; // output charset
     UnikeyOptions ukopt;
-    gboolean process_w_at_begin;
+    //gboolean process_w_at_begin;
     gboolean last_key_with_shift;
 
     std::string* preeditstr;
