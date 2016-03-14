@@ -453,7 +453,9 @@ static void ibus_unikey_engine_property_activate(IBusEngine* engine,
 
     UnikeySetInputMethod(unikey->im);
     UnikeySetOutputCharset(unikey->oc);
-    UnikeySetOptions(&unikey->ukopt);    
+    UnikeySetOptions(&unikey->ukopt);
+    
+    parent_class->property_activate(engine, prop_name, prop_state);
 }
 
 static void ibus_unikey_engine_create_property_list(IBusUnikeyEngine* unikey)
