@@ -1,0 +1,5 @@
+another-ibus-unikey (${version}-1build${release}~${serie}1) ${serie}; urgency=low
+
+  * Build for ubuntu ppa
+
+ -- Bong Nguyen <vanbong@gmail.com>  ${date}

@@ -10,6 +10,10 @@ It use ukengine for progress key event.
 (a modified version of ukengine)
 
 For support: goto http://forum.ubuntu-vn.org/viewforum.php?f=85
+For ppa: https://launchpad.net/~ankeoque/+archive/ubuntu/another-ibus-unikey
 
-Please read INSTALL for how to install
+For installation:
 
+sudo apt-get update && sudo apt-get install build-essential libtool autopoint autoconf autogen autotools-dev intltool libibus-1.0-dev libgtk-3-dev
+./autogen.sh --prefix=/usr --with-gtk-version=3
+make && sudo make install

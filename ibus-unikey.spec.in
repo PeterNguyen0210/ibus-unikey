@@ -5,8 +5,8 @@ Summary:        Vietnamese input method for Ibus Use Unikey engine
 
 Group:          User Interface/X
 License:        GPLv3
-URL:            http://code.google.com/p/ibus-unikey/
-Source:         http://ibus-unikey.googlecode.com/files/%{name}-%{version}.tar.gz
+URL:            https://github.com/bongnv/ibus-unikey
+Source:         https://github.com/bongnv/ibus-unikey/archive/%{version}.tar.gz
 
 %description
 IBus is an Intelligent Input Bus.
@@ -17,7 +17,7 @@ Ibus-Unikey is a Vietnamese input method for Ibus Use Unikey engine to process k
 
 BuildRequires:  gettext
 BuildRequires:  ibus-devel
-BuildRequires:  gtk2-devel
+BuildRequires:  gtk3-devel
 Requires:       ibus
 
 %prep

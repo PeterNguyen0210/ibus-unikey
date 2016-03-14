@@ -1,0 +1,13 @@
+Source: another-ibus-unikey
+Section: utils
+Priority: optional
+Maintainer: Bong Nguyen <vanbong@gmail.com>
+Build-Depends: debhelper (>= 8.0.0), autotools-dev, pkg-config, libibus-1.0-dev (>= 1.4), intltool, libgtk2.0-dev
+Standards-Version: 3.8.4
+Homepage: https://github.com/bongnv/ibus-unikey
+
+Package: another-ibus-unikey
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, ibus (>= 1.4)
+Description: Unikey engine for IBus
+ IBus-Unikey is a IM Engine for Vietnamese, based on IBus.
