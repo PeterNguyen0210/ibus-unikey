@@ -1,7 +1,7 @@
-m4_define([package_name], [ibus-unikey])
-m4_define([ibus_unikey_version], [0.6.1])
+m4_define([package_name], [another-ibus-unikey])
+m4_define([package_version], [0.7.2])
 
-AC_INIT([package_name], [ibus_unikey_version], [http://code.google.com/p/ibus-unikey], [package_name])
+AC_INIT([package_name], [package_version], [https://github.com/bongnv/ibus-unikey], [package_name])
 AM_INIT_AUTOMAKE([1.10])
 m4_ifdef([AM_SILENT_RULES],[AM_SILENT_RULES([yes])])
 AC_GNU_SOURCE
@@ -31,7 +31,7 @@ IT_PROG_INTLTOOL
 
 AC_ARG_WITH(gtk-version,
     AS_HELP_STRING([--with-gtk-version[=VERSION]],
-                   [Choose GTK version to build with. VERSION=2 or 3 [default=2]]),
+                   [Choose GTK version to build with. VERSION=2 or 3 [default=3]]),
     gtk_version=$with_gtk_version
 )
 AS_IF([test "x$gtk_version" = "x3" || test "x$gtk_version" = "xgtk-3" || test "x$gtk_version" = "xgtk3"],
@@ -40,7 +40,7 @@ AS_IF([test "x$gtk_version" = "x3" || test "x$gtk_version" = "xgtk-3" || test "x
 )
 
 PKG_CHECK_MODULES(IBUS, [
-    ibus-1.0 >= 1.2.99
+    ibus-1.0 >= 1.3.99
 ])
 
 PKG_CHECK_MODULES(GTK,
