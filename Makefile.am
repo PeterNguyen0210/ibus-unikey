@@ -48,7 +48,7 @@ debian/changelog:
 		version=@VERSION@; \
 		serie=$(serie); \
 		if test -z "$$serie"; then \
-		  serie=lucid; \
+		  serie=trusty; \
 		fi; \
 		if test -z "$$release"; then \
 		  release=1; \
