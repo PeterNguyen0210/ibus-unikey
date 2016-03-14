@@ -30,14 +30,14 @@ static unsigned char WordBreakSyms[] =
     '|'
 };
 
-static unsigned char WordAutoCommit[] =
-{
-    '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
-    'b', 'c', 'f', 'g', 'h', 'j', 'k', 'l', 'm', 'n',
-    'p', 'q', 'r', 's', 't', 'v', 'x', 'z',
-    'B', 'C', 'F', 'G', 'H', 'J', 'K', 'L', 'M', 'N',
-    'P', 'Q', 'R', 'S', 'T', 'V', 'X', 'Z'
-};
+// static unsigned char WordAutoCommit[] =
+// {
+//     '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
+//     'b', 'c', 'f', 'g', 'h', 'j', 'k', 'l', 'm', 'n',
+//     'p', 'q', 'r', 's', 't', 'v', 'x', 'z',
+//     'B', 'C', 'F', 'G', 'H', 'J', 'K', 'L', 'M', 'N',
+//     'P', 'Q', 'R', 'S', 'T', 'V', 'X', 'Z'
+// };
 
 static IBusEngineClass* parent_class = NULL;
 static IBusConfig*      config       = NULL;

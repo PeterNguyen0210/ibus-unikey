@@ -50,7 +50,6 @@ install: build
 	dh_testroot
 	dh_prep  
 	dh_installdirs
-	$(MAKE) DESTDIR=$(CURDIR)/debian/ibus-m17n install
 
 binary-indep: install
 
@@ -60,7 +59,6 @@ binary-arch: install
 	dh_installchangelogs
 	dh_installdocs
 	dh_installexamples
-	dh_installman debian/ibus-engine-m17n.1
 	dh_link
 	dh_strip
 	dh_compress
