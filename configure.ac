@@ -1,5 +1,5 @@
 m4_define([package_name], [another-ibus-unikey])
-m4_define([package_version], [0.7.2])
+m4_define([package_version], [0.7.0])
 
 AC_INIT([package_name], [package_version], [https://github.com/bongnv/ibus-unikey], [package_name])
 AM_INIT_AUTOMAKE([1.10])

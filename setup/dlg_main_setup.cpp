@@ -119,11 +119,11 @@ void init_dialog_controls(GtkBuilder* builder)
         b = DEFAULT_CONF_MACROENABLED;
     gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(wid), b);
 
-    wid = GTK_WIDGET(gtk_builder_get_object(builder, "check_processwatbegin"));
-    g_signal_connect(wid, "toggled", G_CALLBACK(update_config_toggle_cb), (void*)CONFIG_PROCESSWATBEGIN);
-    if (!ibus_unikey_config_get_boolean(config, CONFIG_SECTION, CONFIG_PROCESSWATBEGIN, &b))
-        b = DEFAULT_CONF_PROCESSWATBEGIN;
-    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(wid), b);
+    // wid = GTK_WIDGET(gtk_builder_get_object(builder, "check_processwatbegin"));
+    // g_signal_connect(wid, "toggled", G_CALLBACK(update_config_toggle_cb), (void*)CONFIG_PROCESSWATBEGIN);
+    // if (!ibus_unikey_config_get_boolean(config, CONFIG_SECTION, CONFIG_PROCESSWATBEGIN, &b))
+    //     b = DEFAULT_CONF_PROCESSWATBEGIN;
+    // gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(wid), b);
 
     wid = GTK_WIDGET(gtk_builder_get_object(builder, "btn_macroedit"));
     g_signal_connect(wid, "clicked", G_CALLBACK(macro_edit_button_cb), gtk_builder_get_object(builder, "dlg_main_setup"));

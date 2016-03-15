@@ -3,7 +3,7 @@ Section: utils
 Priority: optional
 Maintainer: Bong Nguyen <vanbong@gmail.com>
 Build-Depends: debhelper (>= 8.0.0), autotools-dev, pkg-config, libibus-1.0-dev (>= 1.4), intltool, libgtk2.0-dev
-Standards-Version: 3.8.4
+Standards-Version: 3.9.4
 Homepage: https://github.com/bongnv/ibus-unikey
 
 Package: another-ibus-unikey
