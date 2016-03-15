@@ -9,5 +9,6 @@ Homepage: https://github.com/bongnv/ibus-unikey
 Package: another-ibus-unikey
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}, ibus (>= 1.4)
+Conflicts: ibus-unikey
 Description: Unikey engine for IBus
  IBus-Unikey is a IM Engine for Vietnamese, based on IBus.
