@@ -1,3 +1,11 @@
+2016-03-15  Nguyễn Văn Bồng <vanbong@gmail.com>
+
+	* Release 0.7.2
+	- Fixed issues relating to focus_out events
+    - Fixed typo issues with "gi"
+	- Removed mouse capture features to fix random crashes
+	- Removed some menus to fix display issues
+    
 2012-02-29  Lê Quốc Tuấn <mr.lequoctuan@gmail.com>
 
 	* Release 0.6.1
